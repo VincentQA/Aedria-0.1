@@ -2,11 +2,8 @@ import streamlit as st
 import os
 from openai import OpenAI
 
-# Access the OpenAI API key from the secrets
-api_key = st.secrets["OPENAI_API_KEY"]
-
-# Set up the OpenAI API client
-client = OpenAI(api_key=api_key)
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Initialiser les variables de session pour stocker la conversation et le statut du bouton
 if "conversation" not in st.session_state:
