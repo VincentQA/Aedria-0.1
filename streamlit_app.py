@@ -60,6 +60,7 @@ S'il ne reste plus qu'une interaction dans le chapitre, tu dois lancer le chapit
 # Function to start the story with the initial pre-prompt
 def commencer_histoire():
     if st.session_state.thread_id is None:
+        # Create a new thread
         thread = client.beta.threads.create()
         st.session_state.thread_id = thread.id
 
@@ -69,6 +70,32 @@ def commencer_histoire():
             role="user",
             content=initial_preprompt
         )
+
+        # Stream the initial response to the chat
+        with st.chat_message("assistant"):
+            stream = client.beta.threads.runs.create(
+                thread_id=st.session_state.thread_id,
+                assistant_id=ASSISTANT_ID,
+                stream=True
+            )
+
+            # Empty container to display the assistant's reply
+            assistant_reply_box = st.empty()
+            
+            # A blank string to store the assistant's reply
+            assistant_reply = ""
+
+            # Iterate through the stream 
+            for event in stream:
+                if isinstance(event, ThreadMessageDelta):
+                    if isinstance(event.data.delta.content[0], TextDeltaBlock):
+                        assistant_reply_box.empty()
+                        assistant_reply += event.data.delta.content[0].text.value
+                        assistant_reply_box.markdown(assistant_reply)
+            
+            # Once the stream is over, update chat history
+            st.session_state.chat_history.append({"role": "assistant",
+                                                  "content": assistant_reply})
 
 # Button to start the story
 if st.button("Commencer l'histoire"):
