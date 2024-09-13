@@ -1,156 +1,129 @@
 import streamlit as st
 from openai import OpenAI
 from openai.types.beta.assistant_stream_event import ThreadMessageDelta
-from openai.types.beta.threads.text_delta_block import TextDeltaBlock 
+from openai.types.beta.threads.text_delta_block import TextDeltaBlock
+import time 
 
 # Retrieve API key and assistant ID from secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-ASSISTANT_ID = st.secrets["ASSISTANT_ID"]
+ASSISTANT_ID_SCENARISTE = st.secrets["ASSISTANT_ID_SCENARISTE"]
+ASSISTANT_ID_ECRIVAIN = st.secrets["ASSISTANT_ID_ECRIVAIN"]
 
-# Initialize the OpenAI client and retrieve the assistant
+# Initialisation du client OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
-assistant = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 
-# Initialize session state to store conversation history locally
+# Initialisation de l'état de la session pour stocker l'historique des conversations et les threads
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+if "thread_id_scenariste" not in st.session_state:
+    st.session_state.thread_id_scenariste = None
+if "thread_id_ecrivain" not in st.session_state:
+    st.session_state.thread_id_ecrivain = None
+if "story_started" not in st.session_state:
+    st.session_state.story_started = False
+if "checkpoint" not in st.session_state:
+    st.session_state.checkpoint = 1  # Suivi du checkpoint actuel
 
-if "thread_id" not in st.session_state:
-    st.session_state.thread_id = None
+# Titre de l'application
+st.title(":tennis: Rencontre sur le court :heart:")
+st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
 
-# Title and introduction
-st.title("🎾 Rencontre sur le court ❤️")
-st.write("""
-Dans un monde où la passion du tennis se mêle à des émotions tumultueuses, Léa, une jeune femme déterminée, 
-doit naviguer entre ses sentiments pour Luc, un joueur mystérieux, et les complications d'une romance naissante, 
-tout en affrontant ses propres démons du passé.
-""")
+# Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
+def initialize_thread(assistant_role):
+    if assistant_role == "scenariste":
+        if st.session_state.thread_id_scenariste is None:
+            thread = client.beta.threads.create()
+            st.session_state.thread_id_scenariste = thread.id
+    elif assistant_role == "ecrivain":
+        if st.session_state.thread_id_ecrivain is None:
+            thread = client.beta.threads.create()
+            st.session_state.thread_id_ecrivain = thread.id
 
-# Display messages in chat history
+# Fonction pour envoyer un message et diffuser la réponse en continu
+def send_message_and_stream(assistant_id, assistant_role, user_input):
+    # Initialiser le thread si nécessaire
+    initialize_thread(assistant_role)
+    thread_id = st.session_state.thread_id_scenariste if assistant_role == "scenariste" else st.session_state.thread_id_ecrivain
+    # Ajouter le message utilisateur au thread
+    client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=user_input
+    )
+    # Créer le run et streamer la réponse de l'assistant
+    assistant_reply = ""
+    # N'afficher que les réponses de l'écrivain
+    if assistant_role == "ecrivain":
+        with st.chat_message("assistant"):
+            stream = client.beta.threads.runs.create(
+                thread_id=thread_id,
+                assistant_id=assistant_id,
+                stream=True
+            )
+            # Boîte vide pour afficher la réponse
+            assistant_reply_box = st.empty()
+            # Itération à travers le stream pour récupérer la réponse au fur et à mesure
+            for event in stream:
+                if isinstance(event, ThreadMessageDelta):
+                    if event.data.delta.content and isinstance(event.data.delta.content[0], TextDeltaBlock):
+                        assistant_reply += event.data.delta.content[0].text.value
+                        assistant_reply_box.markdown(assistant_reply)
+            # Ajouter la réponse finale à l'historique de la conversation
+            st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
+    else:
+        # Si c'est le scénariste, on attend simplement la réponse sans l'afficher
+        stream = client.beta.threads.runs.create(
+            thread_id=thread_id,
+            assistant_id=assistant_id,
+            stream=True
+        )
+        for event in stream:
+            if isinstance(event, ThreadMessageDelta):
+                if event.data.delta.content and isinstance(event.data.delta.content[0], TextDeltaBlock):
+                    assistant_reply += event.data.delta.content[0].text.value
+    # Retourner la réponse complète de l'assistant
+    return assistant_reply
+
+# Fonction pour démarrer l'histoire avec le scénariste sans prendre en compte une réponse du lecteur
+def start_story():
+    st.session_state.story_started = True
+    st.session_state.checkpoint = 1  # Réinitialiser au checkpoint 1
+    # Envoyer un message simple pour démarrer l'histoire
+    user_input = "Commence l'histoire au premier chapitre, checkpoint 1."
+    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE, "scenariste", user_input)
+    # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
+    send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Continue l'histoire.")
+
+# Fonction pour gérer le passage du plan scénariste à l'écrivain
+def generate_plan_and_pass_to_writer(user_input):
+    # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
+    scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}."
+    # Envoyer le message pour générer le plan avec le scénariste
+    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE, "scenariste", scenariste_prompt)
+    # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
+    # On n'affiche plus le plan du scénariste au lecteur
+    # st.write(f"Plan du scénariste reçu : {scenariste_plan}")
+    send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Continue l'histoire.")
+    # Incrémenter le checkpoint
+    st.session_state.checkpoint += 1
+
+# Affichage de l'historique des messages dans le chat
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Define the initial hidden pre-prompt for the assistant
-initial_preprompt = """
-1. Ouvre et développe les points ci-dessus grace au document du chapitre en cours avant de commencer à écrire.
-2. Suivre le plan de résumé du chapitre du document
-3. Intègre la description de Léa et de Luc en respectant le description du document
-4. Les descriptions doivent etre longue et détaillé 
-4. La longueur de ta réponse est de 1500 mots
-5. Arrête le récit après avoir proposé un choix et attends la réponse du lecteur.
-6. Intègre les choix du lecteur en respectant leur position dans le résumé du chapitre du document.
-7. Respecte toujours le déroulé du chapitre en cours, en intégrant les éléments obligatoires et en évitant les éléments interdits. Ne continue jamais l’histoire avant d’avoir reçu la réponse du lecteur.
-8. Propose exactement les choix spécifiés du document dans des contextes pertinents ( exemple si elle doit se changer c'est dans les vestiaires ou chez elle etc)
-À la fin de chaque message, indique le chapitre en cours et le nombre d’interactions restantes avant de passer au chapitre suivant. Exemple : Chapitre 1, 2 interactions restantes avant de passer au Chapitre 2.
-9. Avant de me proposer le texte, relis ton texte et vérifie que le contenu du chapitre est bien présent et que tu as bien respecter les contraintes du chapitres et que le choix du lecteur est dans un contexte pertinent   
-"""
+# Afficher le bouton pour démarrer l'histoire
+if not st.session_state.story_started:
+    if st.button("Lancer l'histoire"):
+        start_story()
 
-# Define the user pre-prompt
-user_preprompt = """
-Tu es un romancier de style nouvelle romance.
-Prends le temps d'avancer dans l'histoire et surtout de tenir compte des choix du lecteur dans ta réponse. 
-Avant de commencer la rédaction, ouvre et apprends les informations du chapitre en cours dans tes knowledges. 
-Je veux que tu appliques sans exception les points de l'auteur :
-A. Le chapitre doit obligatoirement inclure (exemple : La présentation de Luc par Léa, il faut que tu intègres alors à la demande de l'auteur une description de Luc en suivant les instructions sur comment le décrire).
-B. Le chapitre ne peut inclure (exemple : si une discussion entre Luc et Léa est interdite, à aucun moment tu as le droit de créer une interaction entre eux).
-C. Choix du lecteur durant le chapitre (il est important de poser à la lettre au mot près les choix du lecteur, mais il faut que ce soit dans un contexte pertinent. Propose une histoire cohérente avec des choix dans un contexte cohérent. Si le choix est une tenue, propose-le quand elle fait son sac ou en sortie de douche et surtout évite les répétitions).
-N'oublie pas, tu dois respecter coûte que coûte ce que tu dois inclure mais surtout ne pas inclure dans le chapitre. 
-Évite toute répétition avec ce que tu as déjà écrit. Ton rôle est de présenter une histoire cohérente jusqu'au choix et surtout d'éviter les répétitions. Chacune de tes interventions doit faire au minimum 4 gros paragraphes. 
-S'il ne reste plus qu'une interaction dans le chapitre, tu dois lancer le chapitre suivant dans ta réponse et donc ouvrir également le document en question.
-"""
-
-# Function to start the story with the initial pre-prompt
-def commencer_histoire():
-    if st.session_state.thread_id is None:
-        # Create a new thread
-        thread = client.beta.threads.create()
-        st.session_state.thread_id = thread.id
-
-        # Send the initial pre-prompt to set the context
-        client.beta.threads.messages.create(
-            thread_id=st.session_state.thread_id,
-            role="user",
-            content=initial_preprompt
-        )
-
-        # Stream the initial response to the chat
-        with st.chat_message("assistant"):
-            stream = client.beta.threads.runs.create(
-                thread_id=st.session_state.thread_id,
-                assistant_id=ASSISTANT_ID,
-                stream=True
-            )
-
-            # Empty container to display the assistant's reply
-            assistant_reply_box = st.empty()
-            
-            # A blank string to store the assistant's reply
-            assistant_reply = ""
-
-            # Iterate through the stream 
-            for event in stream:
-                if isinstance(event, ThreadMessageDelta):
-                    if isinstance(event.data.delta.content[0], TextDeltaBlock):
-                        assistant_reply_box.empty()
-                        assistant_reply += event.data.delta.content[0].text.value
-                        assistant_reply_box.markdown(assistant_reply)
-            
-            # Once the stream is over, update chat history
-            st.session_state.chat_history.append({"role": "assistant",
-                                                  "content": assistant_reply})
-
-# Button to start the story
-if st.button("Commencer l'histoire"):
-    commencer_histoire()
-
-# Textbox and streaming process
-if user_query := st.chat_input("Vous :"):
-
-    # Ensure the thread is created and the pre-prompt is sent
-    if st.session_state.thread_id is None:
-        commencer_histoire()
-
-    # Combine the user's input with the pre-prompt
-    full_message = f"{user_preprompt}\n\nRéponse du lecteur : {user_query}"
-
-    # Display the user's query
-    with st.chat_message("user"):
-        st.markdown(user_query)
-
-    # Store the user's query into the history
-    st.session_state.chat_history.append({"role": "user",
-                                          "content": user_query})
-    
-    # Add user query to the thread with the pre-prompt
-    client.beta.threads.messages.create(
-        thread_id=st.session_state.thread_id,
-        role="user",
-        content=full_message
-    )
-
-    # Stream the assistant's reply
-    with st.chat_message("assistant"):
-        stream = client.beta.threads.runs.create(
-            thread_id=st.session_state.thread_id,
-            assistant_id=ASSISTANT_ID,
-            stream=True
-        )
-        
-        # Empty container to display the assistant's reply
-        assistant_reply_box = st.empty()
-        
-        # A blank string to store the assistant's reply
-        assistant_reply = ""
-
-        # Iterate through the stream 
-        for event in stream:
-            if isinstance(event, ThreadMessageDelta):
-                if isinstance(event.data.delta.content[0], TextDeltaBlock):
-                    assistant_reply_box.empty()
-                    assistant_reply += event.data.delta.content[0].text.value
-                    assistant_reply_box.markdown(assistant_reply)
-        
-        # Once the stream is over, update chat history
-        st.session_state.chat_history.append({"role": "assistant",
-                                              "content": assistant_reply})
+# Gestion des choix du lecteur et progression des checkpoints
+if st.session_state.story_started:
+    user_query = st.chat_input("Faites votre choix :")
+    if user_query.strip() != '':
+        with st.chat_message("user"):
+            st.markdown(user_query)
+        # Stocker la réponse du lecteur dans l'historique de conversation
+        st.session_state.chat_history.append({"role": "user", "content": user_query})
+        # Envoyer le choix du lecteur au scénariste pour générer un nouveau plan et passer à l'écrivain
+        generate_plan_and_pass_to_writer(user_query)
