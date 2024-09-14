@@ -4,7 +4,7 @@ from openai.types.beta.assistant_stream_event import ThreadMessageDelta
 from openai.types.beta.threads.text_delta_block import TextDeltaBlock
 import time 
 
-# Retrieve API key and assistant ID from secrets
+# Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 ASSISTANT_ID_SCENARISTE = st.secrets["ASSISTANT_ID_SCENARISTE"]
 ASSISTANT_ID_ECRIVAIN = st.secrets["ASSISTANT_ID_ECRIVAIN"]
@@ -88,24 +88,32 @@ def send_message_and_stream(assistant_id, assistant_role, user_input):
 def start_story():
     st.session_state.story_started = True
     st.session_state.checkpoint = 1  # Réinitialiser au checkpoint 1
+    # Afficher le message d'attente
+    waiting_message = st.empty()
+    waiting_message.info("Votre histoire est en train de s'écrire...")
     # Envoyer un message simple pour démarrer l'histoire
     user_input = "Commence l'histoire au premier chapitre, checkpoint 1."
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE, "scenariste", user_input)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Continue l'histoire.")
+    # Supprimer le message d'attente
+    waiting_message.empty()
 
 # Fonction pour gérer le passage du plan scénariste à l'écrivain
 def generate_plan_and_pass_to_writer(user_input):
+    # Afficher le message d'attente
+    waiting_message = st.empty()
+    waiting_message.info("Votre histoire est en train de s'écrire...")
     # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
     scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}."
     # Envoyer le message pour générer le plan avec le scénariste
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
-    # On n'affiche plus le plan du scénariste au lecteur
-    # st.write(f"Plan du scénariste reçu : {scenariste_plan}")
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Continue l'histoire.")
     # Incrémenter le checkpoint
     st.session_state.checkpoint += 1
+    # Supprimer le message d'attente
+    waiting_message.empty()
 
 # Affichage de l'historique des messages dans le chat
 for message in st.session_state.chat_history:
@@ -120,7 +128,7 @@ if not st.session_state.story_started:
 # Gestion des choix du lecteur et progression des checkpoints
 if st.session_state.story_started:
     user_query = st.chat_input("Faites votre choix :")
-    if user_query.strip() != '':
+    if user_query is not None and user_query.strip() != '':
         with st.chat_message("user"):
             st.markdown(user_query)
         # Stocker la réponse du lecteur dans l'historique de conversation
