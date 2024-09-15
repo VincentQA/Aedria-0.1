@@ -105,11 +105,11 @@ def generate_plan_and_pass_to_writer(user_input):
     waiting_message = st.empty()
     waiting_message.info("Votre histoire est en train de s'écrire...")
     # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
-    scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}.Inclus le choix du lecteur dans le début de ton plan afin de proposer une scène qui apporte un vraie impact dans l'histoire."
+    scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}."
     # Envoyer le message pour générer le plan avec le scénariste
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
-    send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Commence par la scène avec le choix du lecture et ensuite continue l'histoire. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
+    send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
     st.session_state.checkpoint += 1
     # Supprimer le message d'attente
