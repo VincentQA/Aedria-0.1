@@ -15,6 +15,11 @@ histoires = [
         "image": "images/couverture_rencontre.jpg",
         "page": "encontre_sur_le_court"
     },
+    {
+        "titre": "Sans état d'âme",
+        "image": "images/couverture_rencontre.jpg",
+        "page": "Sans-etat-ame"
+    },
     # Ajoutez d'autres histoires ici
 ]
 
