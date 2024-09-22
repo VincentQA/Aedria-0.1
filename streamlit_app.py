@@ -43,15 +43,20 @@ else:
     # Afficher la page de l'histoire sélectionnée
     st.title(page.replace('_', ' '))
 
-    # Charger le contenu spécifique de la page
-    if page == 'Rencontre_sur_le_court':
-        st.write("Contenu de l'histoire **Rencontre sur le court**...")
-        # Ajoutez ici le code spécifique à cette histoire
-    elif page == 'Sans_etat_ame':
-        st.write("Contenu de l'histoire **Sans état d'âme**...")
-        # Ajoutez ici le code spécifique à cette histoire
-    else:
-        st.error("Page non trouvée.")
+    # Importer et exécuter le code spécifique de la page
+    try:
+        if page == 'Rencontre_sur_le_court':
+            from pages.Rencontre_sur_le_court import app as story_app
+            story_app()
+        elif page == 'Sans_etat_ame':
+            from pages.Sans_etat_ame import app as story_app
+            story_app()
+        else:
+            st.error("Page non trouvée.")
+    except ModuleNotFoundError:
+        st.error("Le module de la page n'a pas été trouvé.")
+    except Exception as e:
+        st.error(f"Une erreur s'est produite : {e}")
 
     # Ajouter un lien pour revenir à l'accueil
     st.markdown("[Retour à l'accueil](/?page=Accueil)")
