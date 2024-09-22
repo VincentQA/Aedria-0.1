@@ -1,4 +1,5 @@
 import streamlit as st
+import urllib.parse  # Importation du module pour encoder les URL
 
 st.set_page_config(page_title="AedrIA", page_icon="📚")
 
@@ -39,6 +40,7 @@ for idx, histoire in enumerate(histoires):
         )
         # Créer un lien vers la page de l'histoire
         route = histoire['route']
-        link = f"[**{histoire['titre']}**]({route})"
+        # Encoder la route pour une URL correcte
+        route_encoded = urllib.parse.quote(route)
+        link = f"[**{histoire['titre']}**](/{route_encoded})"
         st.markdown(f"<div style='text-align: center;'>{link}</div>", unsafe_allow_html=True)
-
