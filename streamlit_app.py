@@ -2,16 +2,17 @@ import streamlit as st
 
 st.set_page_config(page_title="AedrIA", page_icon="📚")
 
-# Gestion des paramètres de requête pour la navigation
-query_params = st.experimental_get_query_params()
-page = query_params.get("page", ["Accueil"])[0]
+# Gestion de l'état de session pour la navigation
+if 'page' not in st.session_state:
+    st.session_state.page = 'Accueil'
 
-if page == "Accueil":
-    # Titre et message de bienvenue
+def navigate(page_name):
+    st.session_state.page = page_name
+
+if st.session_state.page == 'Accueil':
     st.title("AedrIA")
     st.write("Bienvenue dans notre application de lecture interactive !")
 
-    # Liste des histoires avec leurs émojis et noms de pages
     histoires = [
         {
             "titre": "Rencontre sur le court",
@@ -26,37 +27,27 @@ if page == "Accueil":
         # Ajoutez d'autres histoires ici
     ]
 
-    # Affichage des vignettes sous forme de grille
     cols = st.columns(3)
     for idx, histoire in enumerate(histoires):
         col = cols[idx % 3]
         with col:
-            # Afficher l'émoji à la place de l'image
             st.markdown(
                 f"<div style='font-size:60px; text-align:center;'>{histoire['emoji']}</div>",
                 unsafe_allow_html=True
             )
-            # Création d'un lien vers la page de l'histoire en utilisant les paramètres de requête
-            link = f"[**{histoire['titre']}**](/?page={histoire['page']})"
-            st.markdown(link, unsafe_allow_html=True)
+            if st.button(histoire['titre'], key=histoire['titre']):
+                navigate(histoire['page'])
 else:
-    # Afficher la page de l'histoire sélectionnée
-    st.title(page.replace('_', ' '))
+    st.title(st.session_state.page.replace('_', ' '))
 
-    # Importer et exécuter le code spécifique de la page
-    try:
-        if page == 'Rencontre_sur_le_court':
-            from pages.Rencontre_sur_le_court import app as story_app
-            story_app()
-        elif page == 'Sans_etat_ame':
-            from pages.Sans_etat_ame import app as story_app
-            story_app()
-        else:
-            st.error("Page non trouvée.")
-    except ModuleNotFoundError:
-        st.error("Le module de la page n'a pas été trouvé.")
-    except Exception as e:
-        st.error(f"Une erreur s'est produite : {e}")
+    # Afficher le contenu de l'histoire sélectionnée
+    if st.session_state.page == 'Rencontre_sur_le_court':
+        # Code de l'histoire directement dans app.py
+        st.write("Bienvenue dans l'histoire **Rencontre sur le court**.")
+        # Ajoutez ici le contenu interactif de votre histoire
+    elif st.session_state.page == 'Sans_etat_ame':
+        st.write("Bienvenue dans l'histoire **Sans état d'âme**.")
+        # Ajoutez ici le contenu interactif de votre histoire
 
-    # Ajouter un lien pour revenir à l'accueil
-    st.markdown("[Retour à l'accueil](/?page=Accueil)")
+    if st.button("Retour à l'accueil"):
+        navigate('Accueil')
