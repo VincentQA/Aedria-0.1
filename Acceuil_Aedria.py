@@ -57,6 +57,8 @@ for idx, histoire in enumerate(histoires):
     background-color: white;
     text-align: center;
     color: black;  /* Texte en noir */
+}
+
         }}
         .card:hover {{
             transform: scale(1.05);
