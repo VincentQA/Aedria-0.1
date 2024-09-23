@@ -18,7 +18,7 @@ histoires = [
     {
         "titre": "Sans état d'âme",
         "emoji": "🕵️‍♂️",
-        "route": "Sans_état_d'âme"
+        "route": "Sans_état_d_âme"
     },
     # Ajoutez d'autres histoires ici
 ]
