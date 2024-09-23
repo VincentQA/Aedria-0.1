@@ -20,6 +20,7 @@ histoires = [
         "emoji": "🕵️‍♂️",
         "route": "Sans_état_d'âme"
     },
+    
     # Ajoutez d'autres histoires ici
 ]
 
@@ -36,26 +37,41 @@ for idx, histoire in enumerate(histoires):
         route = histoire['route']
         route_encoded = urllib.parse.quote(route)
         # Créer un lien qui enveloppe toute la case
-        # Utiliser st.markdown avec du HTML
 
         # Créer un HTML pour la case
         case_html = f"""
-        <a href='/{route_encoded}' style='text-decoration: none; color: inherit;'>
-            <div style='border: 1px solid #ccc; border-radius: 10px; padding: 20px; margin: 10px; transition: transform 0.2s;'>
-                <div style='font-size:60px; text-align: center;'>{histoire['emoji']}</div>
-                <div style='font-size:18px; font-weight:bold; text-align: center;'>{histoire['titre']}</div>
-            </div>
-        </a>
         <style>
-        a:hover div {{
+        .card {{
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            transition: transform 0.2s;
+            height: 200px;  /* Fixer la hauteur des cases */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            background-color: white;
+            text-align: center;
+        }}
+        .card:hover {{
             transform: scale(1.05);
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }}
         @media only screen and (max-width: 600px) {{
-            div {{
+            .card {{
                 padding: 10px;
             }}
         }}
         </style>
+        <a href='/{route_encoded}' style='text-decoration: none; color: inherit;'>
+            <div class='card'>
+                <div style='font-size:60px;'>{histoire['emoji']}</div>
+                <div style='font-size:18px; font-weight:bold;'>{histoire['titre']}</div>
+            </div>
+        </a>
         """
         st.markdown(case_html, unsafe_allow_html=True)
