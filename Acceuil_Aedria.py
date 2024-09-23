@@ -20,14 +20,13 @@ histoires = [
         "emoji": "🕵️‍♂️",
         "route": "Sans_état_d'âme"
     },
-    
     # Ajoutez d'autres histoires ici
 ]
 
 # Affichage des vignettes sous forme de grille
 st.write("### Sélectionnez une histoire :")
 
-# Définir le nombre de colonnes en fonction de la largeur de l'écran
+# Définir le nombre de colonnes
 num_cols = 3  # Vous pouvez ajuster ce nombre pour plus ou moins de colonnes
 
 cols = st.columns(num_cols)
@@ -41,24 +40,22 @@ for idx, histoire in enumerate(histoires):
         # Créer un HTML pour la case
         case_html = f"""
         <style>
-        .card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px;
-    transition: transform 0.2s;
-    height: 200px;  /* Fixer la hauteur des cases */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    background-color: white;
-    text-align: center;
-    color: black;  /* Texte en noir */
-}
-
+        .card {{
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            transition: transform 0.2s;
+            height: 200px;  /* Fixer la hauteur des cases */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            background-color: white;
+            text-align: center;
+            color: black;  /* Texte en noir */
         }}
         .card:hover {{
             transform: scale(1.05);
