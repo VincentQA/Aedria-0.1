@@ -23,7 +23,7 @@ histoires = [
      {
         "titre": "Sous les masques du désir",
         "emoji": "🎹",
-        "route": "sous_les_masques_du_desir"
+        "route": "sous_les_masques_du_désir"
     },# Ajoutez d'autres histoires ici
 ]
 
