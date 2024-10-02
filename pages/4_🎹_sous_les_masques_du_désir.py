@@ -7,7 +7,7 @@ import time
 
 # Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-ASSISTANT_ID_SCENARISTE = st.secrets["ASSISTANT_ID_SCENARISTE"]
+ASSISTANT_ID_SCENARISTE = st.secrets["ASSISTANT_ID_SCENARISTE_MDD"]
 ASSISTANT_ID_ECRIVAIN = st.secrets["ASSISTANT_ID_ECRIVAIN"]
 
 # Initialisation du client OpenAI
