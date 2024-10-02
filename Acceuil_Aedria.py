@@ -20,7 +20,11 @@ histoires = [
         "emoji": "🕵️‍♂️",
         "route": "Sans_état_d_âme"
     },
-    # Ajoutez d'autres histoires ici
+     {
+        "titre": "Sous les masques du désir",
+        "emoji": "🎹",
+        "route": "sous_les_masques_du_desir"
+    },# Ajoutez d'autres histoires ici
 ]
 
 # Affichage des vignettes sous forme de grille
