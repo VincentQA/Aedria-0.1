@@ -6,8 +6,8 @@ import time
 
 # Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-ASSISTANT_ID_SCENARISTE_SEA = st.secrets["ASSISTANT_ID_SCENARISTE"]
-ASSISTANT_ID_ECRIVAIN_SEA = st.secrets["ASSISTANT_ID_ECRIVAIN"]
+ASSISTANT_ID_SCENARISTE = st.secrets["ASSISTANT_ID_SCENARISTE"]
+ASSISTANT_ID_ECRIVAIN = st.secrets["ASSISTANT_ID_ECRIVAIN"]
 
 # Initialisation du client OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -95,7 +95,7 @@ def start_story():
     user_input = "Commence par le checkpoint 2."
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_SEA, "scenariste", user_input)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
-    send_message_and_stream(ASSISTANT_ID_ECRIVAIN_SEA, "ecrivain", f"Voici le plan : {scenariste_plan}. Continue l'histoire.")
+    send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Continue l'histoire.")
     # Supprimer le message d'attente
     waiting_message.empty()
 
@@ -109,7 +109,7 @@ def generate_plan_and_pass_to_writer(user_input):
     # Envoyer le message pour générer le plan avec le scénariste
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_SEA, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
-    send_message_and_stream(ASSISTANT_ID_ECRIVAIN_SEA, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
+    send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
     st.session_state.checkpoint += 1
     # Supprimer le message d'attente
