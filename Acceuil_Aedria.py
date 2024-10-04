@@ -17,7 +17,7 @@ histoires = [
     },
     {
         "titre": "La légende du loup blanc",
-        "emoji": "🕵️‍♂️",
+        "emoji": "🐺",
         "route": "legende_loup_blanc"
     },
      {
