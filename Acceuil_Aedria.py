@@ -18,7 +18,7 @@ histoires = [
     {
         "titre": "La légende du loup blanc",
         "emoji": "🐺",
-        "route": "legende_loup_blanc"
+        "route": "légende_loup_blanc"
     },
      {
         "titre": "Sous les masques du désir",
