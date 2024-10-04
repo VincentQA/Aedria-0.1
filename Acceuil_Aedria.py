@@ -16,9 +16,9 @@ histoires = [
         "route": "Rencontre_sur_le_court"
     },
     {
-        "titre": "Sans état d'âme",
+        "titre": "La légende du loup blanc",
         "emoji": "🕵️‍♂️",
-        "route": "Sans_état_d_âme"
+        "route": "legende_loup_blanc"
     },
      {
         "titre": "Sous les masques du désir",
