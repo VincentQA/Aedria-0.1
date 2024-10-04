@@ -11,7 +11,7 @@ st.sidebar.success("Sélectionnez une histoire dans le menu ci-dessus.")
 # Liste des histoires avec leurs émojis et routes
 histoires = [
     {
-        "titre": "Rencontre sur le court",
+        "titre": "Le nouvel assistant",
         "emoji": "🎾",
         "route": "Rencontre_sur_le_court"
     },
