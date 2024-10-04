@@ -107,7 +107,7 @@ def generate_plan_and_pass_to_writer(user_input):
     # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
     scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}."
     # Envoyer le message pour générer le plan avec le scénariste
-    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LLB _SEA, "scenariste", scenariste_prompt)
+    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LLB, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
