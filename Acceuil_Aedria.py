@@ -11,11 +11,6 @@ st.sidebar.success("Sélectionnez une histoire dans le menu ci-dessus.")
 # Liste des histoires avec leurs émojis et routes
 histoires = [
     {
-        "titre": "Le nouvel assistant",
-        "emoji": "👨‍💻",
-        "route": "Nouvel_Assistant"
-    },
-    {
         "titre": "La légende du loup blanc",
         "emoji": "🐺",
         "route": "légende_loup_blanc"
@@ -24,7 +19,14 @@ histoires = [
         "titre": "Sous les masques du désir",
         "emoji": "🎹",
         "route": "sous_les_masques_du_désir"
-    },# Ajoutez d'autres histoires ici
+    },
+    {
+        "titre": "Le nouvel assistant",
+        "emoji": "👨‍💻",
+        "route": "Nouvel_Assistant"
+    },
+    
+    # Ajoutez d'autres histoires ici
 ]
 
 # Affichage des vignettes sous forme de grille
