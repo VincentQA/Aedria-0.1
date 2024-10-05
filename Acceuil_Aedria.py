@@ -12,8 +12,8 @@ st.sidebar.success("Sélectionnez une histoire dans le menu ci-dessus.")
 histoires = [
     {
         "titre": "Le nouvel assistant",
-        "emoji": "🎾",
-        "route": "Rencontre_sur_le_court"
+        "emoji": "👨‍💻",
+        "route": "Nouvel Assistant"
     },
     {
         "titre": "La légende du loup blanc",
