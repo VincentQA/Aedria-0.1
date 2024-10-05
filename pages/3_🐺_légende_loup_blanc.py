@@ -1,3 +1,4 @@
+
 import streamlit as st
 from openai import OpenAI
 from openai.types.beta.assistant_stream_event import ThreadMessageDelta
@@ -6,7 +7,7 @@ import time
 
 # Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-ASSISTANT_ID_SCENARISTE_LLB  = st.secrets["ASSISTANT_ID_SCENARISTE_LLB"]
+ASSISTANT_ID_SCENARISTE_LLB = st.secrets["ASSISTANT_ID_SCENARISTE_LLB"]
 ASSISTANT_ID_ECRIVAIN = st.secrets["ASSISTANT_ID_ECRIVAIN"]
 
 # Initialisation du client OpenAI
@@ -15,8 +16,8 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # Initialisation de l'état de la session pour stocker l'historique des conversations et les threads
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if "thread_ID_SCENARISTE_LLB " not in st.session_state:
-    st.session_state.thread_ID_SCENARISTE_LLB  = None
+if "thread_id_SCENARISTE_LLB" not in st.session_state:
+    st.session_state.thread_id_SCENARISTE_LLB = None
 if "thread_id_ecrivain" not in st.session_state:
     st.session_state.thread_id_ecrivain = None
 if "story_started" not in st.session_state:
@@ -25,15 +26,15 @@ if "checkpoint" not in st.session_state:
     st.session_state.checkpoint = 1  # Suivi du checkpoint actuel
 
 # Titre de l'application
-st.title(" La Légende du loup blanc ")
+st.title(" Sous les masques du désir ")
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
 
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
     if assistant_role == "scenariste":
-        if st.session_state.thread_ID_SCENARISTE_LLB  is None:
+        if st.session_state.thread_id_SCENARISTE_LLB is None:
             thread = client.beta.threads.create()
-            st.session_state.thread_ID_SCENARISTE_LLB  = thread.id
+            st.session_state.thread_id_SCENARISTE_LLB = thread.id
     elif assistant_role == "ecrivain":
         if st.session_state.thread_id_ecrivain is None:
             thread = client.beta.threads.create()
@@ -43,7 +44,7 @@ def initialize_thread(assistant_role):
 def send_message_and_stream(assistant_id, assistant_role, user_input):
     # Initialiser le thread si nécessaire
     initialize_thread(assistant_role)
-    thread_id = st.session_state.thread_ID_SCENARISTE_LLB  if assistant_role == "scenariste" else st.session_state.thread_id_ecrivain
+    thread_id = st.session_state.thread_id_SCENARISTE_LLB if assistant_role == "scenariste" else st.session_state.thread_id_ecrivain
     # Ajouter le message utilisateur au thread
     client.beta.threads.messages.create(
         thread_id=thread_id,
@@ -107,7 +108,7 @@ def generate_plan_and_pass_to_writer(user_input):
     # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
     scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}."
     # Envoyer le message pour générer le plan avec le scénariste
-    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LLB, "scenariste", scenariste_prompt)
+    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LLB_MDD, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
