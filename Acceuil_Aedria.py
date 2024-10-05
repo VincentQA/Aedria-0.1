@@ -13,7 +13,7 @@ histoires = [
     {
         "titre": "Le nouvel assistant",
         "emoji": "👨‍💻",
-        "route": "Nouvel Assistant"
+        "route": "Nouvel_Assistant"
     },
     {
         "titre": "La légende du loup blanc",
