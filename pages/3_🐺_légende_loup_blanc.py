@@ -1,13 +1,3 @@
-Description de personnage dans ce checkpoint si nouveau ou alors états des personnages dans ce checkpoint :
- 
- 
-Description détaillée du checkpoint :
- 
- 
-Événements et interactions dans le checkpoint :
- 
- 
-
 import streamlit as st
 from openai import OpenAI
 from openai.types.beta.assistant_stream_event import ThreadMessageDelta
