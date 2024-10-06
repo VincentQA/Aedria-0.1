@@ -105,7 +105,7 @@ def generate_plan_and_pass_to_writer(user_input):
     waiting_message = st.empty()
     waiting_message.info("Votre histoire est en train de s'écrire...")
     # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
-    scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}."
+    scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}. Adapte le plan du checkpoint en fonction de la réponse du lecteur."
     # Envoyer le message pour générer le plan avec le scénariste
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_NA_RSLC, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
