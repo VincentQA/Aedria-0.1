@@ -8,14 +8,14 @@ st.write("Bienvenue dans notre application de lecture interactive !")
 
 st.sidebar.success("Sélectionnez une histoire dans le menu ci-dessus.")
 
- # Liste des histoires avec leurs émojis, routes, descriptions et genres
+# Liste des histoires avec leurs émojis, routes, descriptions et genres
 histoires = [
     {
         "titre": "La légende du loup blanc",
         "emoji": "🐺",
         "route": "légende_loup_blanc",
         "description": "Une quête épique à travers des forêts enneigées pour découvrir les secrets d'un loup mythique.",
-        "genre": "Fantastique"
+        "genre": "Fantasy"
     },
     {
         "titre": "Sous les masques du désir",
@@ -29,7 +29,7 @@ histoires = [
         "emoji": "👨‍💻",
         "route": "Nouvel_Assistant",
         "description": "Un assistant IA révolutionnaire qui change la vie de son créateur d'une manière inattendue.",
-        "genre": "Romance comique"
+        "genre": "Science-fiction"
     },
     
     # Ajoutez d'autres histoires ici
@@ -47,43 +47,13 @@ for idx, histoire in enumerate(histoires):
     with col:
         route = histoire['route']
         route_encoded = urllib.parse.quote(route)
-        # Créer un lien qui enveloppe toute la case
-
-        # Créer un HTML pour la case
-        case_html = f"""
-        <style>
-        .card {{
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 10px;
-            transition: transform 0.2s;
-            height: 200px;  /* Fixer la hauteur des cases */
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-            background-color: white;
-            text-align: center;
-            color: black;  /* Texte en noir */
-        }}
-        .card:hover {{
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        }}
-        @media only screen and (max-width: 600px) {{
-            .card {{
-                padding: 10px;
-            }}
-        }}
-        </style>
-        <a href='/{route_encoded}' style='text-decoration: none; color: inherit;'>
-            <div class='card'>
-                <div style='font-size:60px;'>{histoire['emoji']}</div>
-                <div style='font-size:18px; font-weight:bold;'>{histoire['titre']}</div>
-            </div>
-        </a>
-        """
-        st.markdown(case_html, unsafe_allow_html=True)
+        st.markdown(f"""
+            <a href='/{route_encoded}' style='text-decoration: none; color: inherit;'>
+                <div style='border: 1px solid #ccc; border-radius: 10px; padding: 20px; margin: 10px; transition: transform 0.2s; height: 250px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; background-color: white; text-align: center; color: black;'>
+                    <div style='font-size:60px;'>{histoire['emoji']}</div>
+                    <div style='font-size:18px; font-weight:bold;'>{histoire['titre']}</div>
+                    <div style='font-size:14px; margin-top: 10px;'>{histoire['description']}</div>
+                    <div style='font-size:12px; font-style:italic; margin-top: 5px;'>Genre: {histoire['genre']}</div>
+                </div>
+            </a>
+        """, unsafe_allow_html=True)
