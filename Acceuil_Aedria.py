@@ -49,7 +49,7 @@ for idx, histoire in enumerate(histoires):
         route_encoded = urllib.parse.quote(route)
         st.markdown(f"""
             <a href='/{route_encoded}' style='text-decoration: none; color: inherit;'>
-                <div style='border: 1px solid #ccc; border-radius: 10px; padding: 20px; margin: 10px; transition: transform 0.2s; height: 250px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; background-color: white; text-align: center; color: black;'>
+                <div style='border: 1px solid #ccc; border-radius: 10px; padding: 20px; margin: 10px; transition: transform 0.2s; min-height: 300px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; box-sizing: border-box; background-color: white; text-align: center; color: black;'>
                     <div style='font-size:60px;'>{histoire['emoji']}</div>
                     <div style='font-size:18px; font-weight:bold;'>{histoire['titre']}</div>
                     <div style='font-size:14px; margin-top: 10px;'>{histoire['description']}</div>
