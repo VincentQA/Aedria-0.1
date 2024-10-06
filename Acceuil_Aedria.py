@@ -8,22 +8,28 @@ st.write("Bienvenue dans notre application de lecture interactive !")
 
 st.sidebar.success("Sélectionnez une histoire dans le menu ci-dessus.")
 
-# Liste des histoires avec leurs émojis et routes
+ # Liste des histoires avec leurs émojis, routes, descriptions et genres
 histoires = [
     {
         "titre": "La légende du loup blanc",
         "emoji": "🐺",
-        "route": "légende_loup_blanc"
+        "route": "légende_loup_blanc",
+        "description": "Une quête épique à travers des forêts enneigées pour découvrir les secrets d'un loup mythique.",
+        "genre": "Fantastique"
     },
-     {
+    {
         "titre": "Sous les masques du désir",
         "emoji": "🎹",
-        "route": "sous_les_masques_du_désir"
+        "route": "sous_les_masques_du_désir",
+        "description": "Un mystère romantique où la musique et les secrets se mêlent pour révéler des vérités cachées.",
+        "genre": "Romance"
     },
     {
         "titre": "Le nouvel assistant",
         "emoji": "👨‍💻",
-        "route": "Nouvel_Assistant"
+        "route": "Nouvel_Assistant",
+        "description": "Un assistant IA révolutionnaire qui change la vie de son créateur d'une manière inattendue.",
+        "genre": "Romance comique"
     },
     
     # Ajoutez d'autres histoires ici
