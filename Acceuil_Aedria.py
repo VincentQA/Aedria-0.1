@@ -14,22 +14,22 @@ histoires = [
         "titre": "La légende du loup blanc",
         "emoji": "🐺",
         "route": "légende_loup_blanc",
-        "description": "Une quête épique à travers des forêts enneigées pour découvrir les secrets d'un loup mythique.",
-        "genre": "Fantasy"
+        "description": "Aléna, une jeune guérisseuse du village de Valoria, sauve Lucian, un étranger mystérieux.",
+        "genre": "Romance Fantastique"
     },
     {
         "titre": "Sous les masques du désir",
         "emoji": "🎹",
         "route": "sous_les_masques_du_désir",
-        "description": "Un mystère romantique où la musique et les secrets se mêlent pour révéler des vérités cachées.",
+        "description": "Camille Laurent, une pianiste virtuose marquée par un passé tumultueux, arrive à Marseille dans l'espoir de reconstruire sa vie et de renouer avec sa passion pour la musique.",
         "genre": "Romance"
     },
     {
         "titre": "Le nouvel assistant",
         "emoji": "👨‍💻",
         "route": "Nouvel_Assistant",
-        "description": "Un assistant IA révolutionnaire qui change la vie de son créateur d'une manière inattendue.",
-        "genre": "Science-fiction"
+        "description": "Chloé, une chef de projet ambitieuse et perfectionniste, voit son quotidien bouleversé par l'arrivée de Lucas, un nouvel assistant maladroit mais bien intentionné.",
+        "genre": "Comédie-romantique"
     },
     
     # Ajoutez d'autres histoires ici
