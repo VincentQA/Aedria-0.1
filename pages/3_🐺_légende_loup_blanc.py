@@ -1,8 +1,18 @@
+Description de personnage dans ce checkpoint si nouveau ou alors états des personnages dans ce checkpoint :
+ 
+ 
+Description détaillée du checkpoint :
+ 
+ 
+Événements et interactions dans le checkpoint :
+ 
+ 
+
 import streamlit as st
 from openai import OpenAI
 from openai.types.beta.assistant_stream_event import ThreadMessageDelta
 from openai.types.beta.threads.text_delta_block import TextDeltaBlock
-import time
+import time 
 
 # Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
@@ -26,9 +36,7 @@ if "checkpoint" not in st.session_state:
 
 # Titre de l'application
 st.title(" 🐺 La légende du loup blanc ")
-st.markdown("<style>h1 { font-size: calc(1.5em + 2vw); } @media (max-width: 768px) { h1 { font-size: calc(1.2em + 4vw); } }</style>", unsafe_allow_html=True)
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
-st.markdown("<style>h2 { font-size: calc(1.2em + 1.5vw); } @media (max-width: 768px) { h2 { font-size: calc(1em + 3vw); } }</style>", unsafe_allow_html=True)
 
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
@@ -56,7 +64,7 @@ def send_message_and_stream(assistant_id, assistant_role, user_input):
     assistant_reply = ""
     # N'afficher que les réponses de l'écrivain
     if assistant_role == "ecrivain":
-        with st.chat_message("assistant", avatar=None):
+        with st.chat_message("assistant"):
             stream = client.beta.threads.runs.create(
                 thread_id=thread_id,
                 assistant_id=assistant_id,
@@ -69,7 +77,7 @@ def send_message_and_stream(assistant_id, assistant_role, user_input):
                 if isinstance(event, ThreadMessageDelta):
                     if event.data.delta.content and isinstance(event.data.delta.content[0], TextDeltaBlock):
                         assistant_reply += event.data.delta.content[0].text.value
-                        assistant_reply_box.markdown(f"<div style='font-size: calc(0.9em + 1vw);'>{assistant_reply}</div>", unsafe_allow_html=True)
+                        assistant_reply_box.markdown(assistant_reply)
             # Ajouter la réponse finale à l'historique de la conversation
             st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
     else:
@@ -120,7 +128,7 @@ def generate_plan_and_pass_to_writer(user_input):
 # Affichage de l'historique des messages dans le chat
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
-        st.markdown(f"<div style='font-size: calc(0.9em + 1vw);'>{message['content']}</div>", unsafe_allow_html=True)
+        st.markdown(message["content"])
 
 # Afficher le bouton pour démarrer l'histoire
 if not st.session_state.story_started:
@@ -131,7 +139,7 @@ if not st.session_state.story_started:
 if st.session_state.story_started:
     user_query = st.chat_input("Faites votre choix :")
     if user_query is not None and user_query.strip() != '':
-        with st.chat_message("user", avatar=None):
+        with st.chat_message("user"):
             st.markdown(user_query)
         # Stocker la réponse du lecteur dans l'historique de conversation
         st.session_state.chat_history.append({"role": "user", "content": user_query})
