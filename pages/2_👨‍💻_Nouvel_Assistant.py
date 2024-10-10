@@ -4,6 +4,9 @@ from openai.types.beta.assistant_stream_event import ThreadMessageDelta
 from openai.types.beta.threads.text_delta_block import TextDeltaBlock
 import time 
 
+# Nombre initial de choix disponibles
+INITIAL_CHOICES = 10  # Remplacez 10 par la valeur souhaitée
+
 # Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 ASSISTANT_ID_SCENARISTE_NA_RSLC = st.secrets["ASSISTANT_ID_SCENARISTE_NA"]
@@ -24,15 +27,11 @@ if "story_started" not in st.session_state:
 if "checkpoint" not in st.session_state:
     st.session_state.checkpoint = 1  # Suivi du checkpoint actuel
 if "choices_remaining" not in st.session_state:
-    st.session_state.choices_remaining = 10  # Nombre de choix disponibles, à ajuster manuellement
+    st.session_state.choices_remaining = INITIAL_CHOICES  # Initialisation du compteur de choix
 
 # Titre de l'application
 st.title("👨‍💻 Le nouvel assistant")
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
-
-# Affichage du compteur de choix restants en haut de l'application
-choice_counter = st.empty()
-choice_counter.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
 
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
@@ -94,8 +93,7 @@ def send_message_and_stream(assistant_id, assistant_role, user_input):
 def start_story():
     st.session_state.story_started = True
     st.session_state.checkpoint = 1  # Réinitialiser au checkpoint 1
-    st.session_state.choices_remaining = 10  # Réinitialiser le nombre de choix
-    choice_counter.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
+    st.session_state.choices_remaining = INITIAL_CHOICES  # Réinitialiser le compteur de choix
     # Afficher le message d'attente
     waiting_message = st.empty()
     waiting_message.info("Votre histoire est en train de s'écrire...")
@@ -120,9 +118,6 @@ def generate_plan_and_pass_to_writer(user_input):
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN_RSLC, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
     st.session_state.checkpoint += 1
-    # Diminuer le nombre de choix restants
-    st.session_state.choices_remaining -= 1
-    choice_counter.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
     # Supprimer le message d'attente
     waiting_message.empty()
 
@@ -131,20 +126,26 @@ for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# Affichage du compteur de choix restants
+st.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
+
 # Afficher le bouton pour démarrer l'histoire
 if not st.session_state.story_started:
     if st.button("Lancer l'histoire"):
         start_story()
 
 # Gestion des choix du lecteur et progression des checkpoints
-if st.session_state.story_started:
+if st.session_state.story_started and st.session_state.choices_remaining > 0:
     user_query = st.chat_input("Faites votre choix :")
-    if user_query is not None and user_query.strip() != '' and st.session_state.choices_remaining > 0:
+    if user_query is not None and user_query.strip() != '':
         with st.chat_message("user"):
             st.markdown(user_query)
         # Stocker la réponse du lecteur dans l'historique de conversation
         st.session_state.chat_history.append({"role": "user", "content": user_query})
         # Envoyer le choix du lecteur au scénariste pour générer un nouveau plan et passer à l'écrivain
         generate_plan_and_pass_to_writer(user_query)
-    elif st.session_state.choices_remaining == 0:
-        st.warning("Vous avez atteint le nombre maximum de choix disponibles.")
+        # Décrémenter le compteur de choix restants
+        st.session_state.choices_remaining -= 1
+        # Optionnel : Afficher une notification si le compteur atteint zéro
+        if st.session_state.choices_remaining <= 0:
+            st.warning("Vous avez utilisé tous vos choix disponibles.")
