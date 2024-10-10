@@ -135,6 +135,8 @@ if st.session_state.story_started:
     # Afficher le nombre de choix restants
     st.info(f"Nombre de choix restants : {st.session_state.choices_remaining}")
     user_query = st.chat_input("Faites votre choix :")
+    # Afficher le compteur de choix restants sous la barre du chat
+    st.markdown(f"**Choix restants : {st.session_state.choices_remaining}**")
     if user_query is not None and user_query.strip() != '' and st.session_state.choices_remaining > 0:
         with st.chat_message("user"):
             st.markdown(user_query)
