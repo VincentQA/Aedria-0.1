@@ -23,6 +23,8 @@ if "story_started" not in st.session_state:
     st.session_state.story_started = False
 if "checkpoint" not in st.session_state:
     st.session_state.checkpoint = 1  # Suivi du checkpoint actuel
+if "choices_remaining" not in st.session_state:
+    st.session_state.choices_remaining = 10  # Nombre de choix disponibles, à ajuster manuellement
 
 # Titre de l'application
 st.title("👨‍💻 Le nouvel assistant")
@@ -88,6 +90,7 @@ def send_message_and_stream(assistant_id, assistant_role, user_input):
 def start_story():
     st.session_state.story_started = True
     st.session_state.checkpoint = 1  # Réinitialiser au checkpoint 1
+    st.session_state.choices_remaining = 10  # Réinitialiser le nombre de choix
     # Afficher le message d'attente
     waiting_message = st.empty()
     waiting_message.info("Votre histoire est en train de s'écrire...")
@@ -112,6 +115,8 @@ def generate_plan_and_pass_to_writer(user_input):
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN_RSLC, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
     st.session_state.checkpoint += 1
+    # Diminuer le nombre de choix restants
+    st.session_state.choices_remaining -= 1
     # Supprimer le message d'attente
     waiting_message.empty()
 
@@ -127,11 +132,15 @@ if not st.session_state.story_started:
 
 # Gestion des choix du lecteur et progression des checkpoints
 if st.session_state.story_started:
+    # Afficher le nombre de choix restants
+    st.info(f"Nombre de choix restants : {st.session_state.choices_remaining}")
     user_query = st.chat_input("Faites votre choix :")
-    if user_query is not None and user_query.strip() != '':
+    if user_query is not None and user_query.strip() != '' and st.session_state.choices_remaining > 0:
         with st.chat_message("user"):
             st.markdown(user_query)
         # Stocker la réponse du lecteur dans l'historique de conversation
         st.session_state.chat_history.append({"role": "user", "content": user_query})
         # Envoyer le choix du lecteur au scénariste pour générer un nouveau plan et passer à l'écrivain
         generate_plan_and_pass_to_writer(user_query)
+    elif st.session_state.choices_remaining == 0:
+        st.warning("Vous avez atteint le nombre maximum de choix disponibles.")
