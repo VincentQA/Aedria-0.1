@@ -33,11 +33,11 @@ if "choices_remaining" not in st.session_state:
 st.title("👨‍💻 Le nouvel assistant")
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
 
-# Affichage du compteur de choix restants dans la barre latérale
-st.sidebar.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
+# Affichage du compteur de choix restants au-dessus du chat
+st.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
 
-# Message de débogage pour vérifier la valeur du compteur
-st.sidebar.write(f"Debug - Choix restants : {st.session_state.choices_remaining}")
+# (Optionnel) Message de débogage pour vérifier la valeur du compteur
+# st.markdown(f"**Debug - Choix restants : {st.session_state.choices_remaining}**")
 
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
@@ -149,10 +149,9 @@ if st.session_state.story_started and st.session_state.choices_remaining > 0:
         generate_plan_and_pass_to_writer(user_query)
         # Décrémenter le compteur de choix restants
         st.session_state.choices_remaining -= 1
-        # Mise à jour du compteur dans la barre latérale
-        st.sidebar.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
-        # Mise à jour du message de débogage
-        st.sidebar.write(f"Debug - Choix restants : {st.session_state.choices_remaining}")
+        # Réafficher le compteur au-dessus du chat
+        # (Re-exécution du script affiche le compteur mis à jour)
+        st.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
         # Optionnel : Afficher une notification si le compteur atteint zéro
         if st.session_state.choices_remaining <= 0:
             st.warning("Vous avez utilisé tous vos choix disponibles.")
