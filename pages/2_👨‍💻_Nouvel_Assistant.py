@@ -30,6 +30,10 @@ if "choices_remaining" not in st.session_state:
 st.title("👨‍💻 Le nouvel assistant")
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
 
+# Affichage du compteur de choix restants en haut de l'application
+choice_counter = st.empty()
+choice_counter.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
+
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
     if assistant_role == "scenariste":
@@ -91,6 +95,7 @@ def start_story():
     st.session_state.story_started = True
     st.session_state.checkpoint = 1  # Réinitialiser au checkpoint 1
     st.session_state.choices_remaining = 10  # Réinitialiser le nombre de choix
+    choice_counter.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
     # Afficher le message d'attente
     waiting_message = st.empty()
     waiting_message.info("Votre histoire est en train de s'écrire...")
@@ -117,6 +122,7 @@ def generate_plan_and_pass_to_writer(user_input):
     st.session_state.checkpoint += 1
     # Diminuer le nombre de choix restants
     st.session_state.choices_remaining -= 1
+    choice_counter.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
     # Supprimer le message d'attente
     waiting_message.empty()
 
@@ -132,8 +138,6 @@ if not st.session_state.story_started:
 
 # Gestion des choix du lecteur et progression des checkpoints
 if st.session_state.story_started:
-    # Afficher le compteur de choix restants avant la barre de saisie du chat
-    st.markdown(f"**Nombre de choix restants : {st.session_state.choices_remaining}**")
     user_query = st.chat_input("Faites votre choix :")
     if user_query is not None and user_query.strip() != '' and st.session_state.choices_remaining > 0:
         with st.chat_message("user"):
