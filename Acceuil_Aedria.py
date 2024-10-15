@@ -27,7 +27,7 @@ histoires = [
  {
         "titre": "Les lettres de l'ombre",
         "emoji": "✉️",
-        "route": "Nouvel_Assistant",
+        "route": "Les_lettres_de_l_ombre",
         "description": "L'héritière d'une grande fortune, reçoit des menaces anonymes. Son père engage Mathieu, un garde du corps sérieux et protecteur. Simultanément, son ami d'enfance revenu après des années d'absence.",
         "genre": "Romance suspence"
     },
