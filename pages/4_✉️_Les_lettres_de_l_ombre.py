@@ -94,7 +94,7 @@ def start_story():
     waiting_message.info("Votre histoire est en train de s'écrire...")
     # Envoyer un message simple pour démarrer l'histoire
     user_input = "Commence le plan pour le checkpoint 1."
-    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LDO_RSLC, "scenariste", user_input)
+    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LDO, "scenariste", user_input)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN_RSLC, "ecrivain", f"Voici le plan : {scenariste_plan}. Développe le checkpoint en suivant le plan")
     # Supprimer le message d'attente
