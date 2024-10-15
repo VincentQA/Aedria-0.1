@@ -24,7 +24,13 @@ histoires = [
         "description": "Chloé, une chef de projet ambitieuse et perfectionniste, voit son quotidien bouleversé par l'arrivée de Lucas, un nouvel assistant maladroit mais bien intentionné.",
         "genre": "Comédie-romantique"
     },
-
+ {
+        "titre": "Les lettres de l'ombre",
+        "emoji": "✉️",
+        "route": "Nouvel_Assistant",
+        "description": "Chloé, une chef de projet ambitieuse et perfectionniste, voit son quotidien bouleversé par l'arrivée de Lucas, un nouvel assistant maladroit mais bien intentionné.",
+        "genre": "Romance suspence"
+    },
     # Ajoutez d'autres histoires ici
 ]
 
