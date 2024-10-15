@@ -7,7 +7,7 @@ import time
 
 # Récupération des clés API et des identifiants des assistants depuis les secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-ASSISTANT_ID_SCENARISTE_LDO_RSLC = st.secrets["ASSISTANT_ID_SCENARISTE_LDO"]
+ASSISTANT_ID_SCENARISTE_LDO = st.secrets["ASSISTANT_ID_SCENARISTE_LDO"]
 ASSISTANT_ID_ECRIVAIN_RSLC = st.secrets["ASSISTANT_ID_ECRIVAIN"]
 
 # Initialisation du client OpenAI
@@ -32,9 +32,9 @@ st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
     if assistant_role == "scenariste":
-        if st.session_state.thread_ID_SCENARISTE_NA is None:
+        if st.session_state.thread_ID_SCENARISTE_LDO is None:
             thread = client.beta.threads.create()
-            st.session_state.thread_ID_SCENARISTE_NA = thread.id
+            st.session_state.thread_ID_SCENARISTE_LDO = thread.id
     elif assistant_role == "ecrivain":
         if st.session_state.thread_id_ecrivain is None:
             thread = client.beta.threads.create()
@@ -44,7 +44,7 @@ def initialize_thread(assistant_role):
 def send_message_and_stream(assistant_id, assistant_role, user_input):
     # Initialiser le thread si nécessaire
     initialize_thread(assistant_role)
-    thread_id = st.session_state.thread_ID_SCENARISTE_NA if assistant_role == "scenariste" else st.session_state.thread_id_ecrivain
+    thread_id = st.session_state.thread_ID_SCENARISTE_LDO if assistant_role == "scenariste" else st.session_state.thread_id_ecrivain
     # Ajouter le message utilisateur au thread
     client.beta.threads.messages.create(
         thread_id=thread_id,
@@ -108,7 +108,7 @@ def generate_plan_and_pass_to_writer(user_input):
     # Préparer le pré-prompt pour le scénariste avec l'instruction explicite de passer au checkpoint suivant
     scenariste_prompt = f"Le lecteur a répondu : {user_input}. Passe maintenant au checkpoint suivant : {st.session_state.checkpoint + 1}. Adapte le plan du checkpoint en fonction de la réponse du lecteur."
     # Envoyer le message pour générer le plan avec le scénariste
-    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LDO_RSLC, "scenariste", scenariste_prompt)
+    scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_LDO, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
     send_message_and_stream(ASSISTANT_ID_ECRIVAIN_RSLC, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
     # Incrémenter le checkpoint
