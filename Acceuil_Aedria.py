@@ -28,7 +28,7 @@ histoires = [
         "titre": "Les lettres de l'ombre",
         "emoji": "✉️",
         "route": "Nouvel_Assistant",
-        "description": "Chloé, une chef de projet ambitieuse et perfectionniste, voit son quotidien bouleversé par l'arrivée de Lucas, un nouvel assistant maladroit mais bien intentionné.",
+        "description": "L'héritière d'une grande fortune, reçoit des menaces anonymes. Son père engage Mathieu, un garde du corps sérieux et protecteur. Simultanément, son ami d'enfance revenu après des années d'absence.",
         "genre": "Romance suspence"
     },
     # Ajoutez d'autres histoires ici
