@@ -25,7 +25,7 @@ if "checkpoint" not in st.session_state:
     st.session_state.checkpoint = 1  # Suivi du checkpoint actuel
 
 # Titre de l'application
-st.title("👨‍💻 Le nouvel assistant")
+st.title("✉️ Les lettres de l'ombre")
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
 
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
