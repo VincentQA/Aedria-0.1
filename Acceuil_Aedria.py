@@ -18,11 +18,11 @@ histoires = [
         "genre": "Romance Fantastique"
     },
     {
-        "titre": "Sous les masques du désir",
-        "emoji": "🎹",
-        "route": "sous_les_masques_du_désir",
+        "titre": "Les lettres de l'ombre",
+        "emoji": "✉️",
+        "route": "Les_lettres_de_l_ombre",
         "description": "Camille Laurent, une pianiste virtuose marquée par un passé tumultueux, arrive à Marseille dans l'espoir de reconstruire sa vie et de renouer avec sa passion pour la musique.",
-        "genre": "Romance"
+        "genre": "Romance-suspense"
     },
     {
         "titre": "Le nouvel assistant",
