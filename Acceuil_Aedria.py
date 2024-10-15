@@ -18,20 +18,20 @@ histoires = [
         "genre": "Romance Fantastique"
     },
     {
-        "titre": "Les lettres de l'ombre",
-        "emoji": "✉️",
-        "route": "Les_lettres_de_l_ombre",
-        "description": "Camille Laurent, une pianiste virtuose marquée par un passé tumultueux, arrive à Marseille dans l'espoir de reconstruire sa vie et de renouer avec sa passion pour la musique.",
-        "genre": "Romance-suspense"
-    },
-    {
         "titre": "Le nouvel assistant",
         "emoji": "👨‍💻",
         "route": "Nouvel_Assistant",
         "description": "Chloé, une chef de projet ambitieuse et perfectionniste, voit son quotidien bouleversé par l'arrivée de Lucas, un nouvel assistant maladroit mais bien intentionné.",
         "genre": "Comédie-romantique"
     },
-    
+  {
+        "titre": "Les lettres de l'ombre",
+        "emoji": "✉️",
+        "route": "Les_lettres_de_l_ombre",
+        "description": "Camille Laurent, une pianiste virtuose marquée par un passé tumultueux, arrive à Marseille dans l'espoir de reconstruire sa vie et de renouer avec sa passion pour la musique.",
+        "genre": "Romance-suspense"
+    },
+
     # Ajoutez d'autres histoires ici
 ]
 
