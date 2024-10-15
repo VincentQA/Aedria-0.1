@@ -27,7 +27,7 @@ histoires = [
   {
         "titre": "Les lettres de l'ombre",
         "emoji": "✉️",
-        "route": "pages/4_✉️_Les_lettres_de_l_ombre.py",
+        "route": "Les_lettres_de_l_ombre",
         "description": "Camille Laurent, une pianiste virtuose marquée par un passé tumultueux, arrive à Marseille dans l'espoir de reconstruire sa vie et de renouer avec sa passion pour la musique.",
         "genre": "Romance-suspense"
     },
