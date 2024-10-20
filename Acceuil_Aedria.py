@@ -6,6 +6,10 @@ st.set_page_config(page_title="AedrIA", page_icon="📚")
 st.title("AedrIA")
 st.write("Bienvenue dans notre application de lecture interactive !")
 
+st.markdown("Votre avis est précieux ! Partagez vos impressions et aidez-nous à améliorer l'application en répondant à notre questionnaire rapide.")
+if st.button('Répondre au questionnaire'):
+    st.write('[Cliquez ici pour accéder au questionnaire](https://forms.gle/4FiNG71ZP7bWFcV4A)')
+
 st.sidebar.success("Sélectionnez une histoire dans le menu ci-dessus.")
 
 # Liste des histoires avec leurs émojis, routes, descriptions et genres
