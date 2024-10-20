@@ -27,6 +27,9 @@ if "checkpoint" not in st.session_state:
 # Titre de l'application
 st.title(" 🐺 La légende du loup blanc ")
 st.subheader("Une aventure interactive où vos choix façonnent l'histoire")
+st.markdown("Votre avis est précieux ! Partagez vos impressions et aidez-nous à améliorer l'application en répondant à notre questionnaire rapide.")
+if st.button('Répondre au questionnaire'):
+    st.write('[Cliquez ici pour accéder au questionnaire](https://forms.gle/4FiNG71ZP7bWFcV4A)')
 
 # Fonction pour créer un nouveau thread pour un assistant s'il n'existe pas encore
 def initialize_thread(assistant_role):
