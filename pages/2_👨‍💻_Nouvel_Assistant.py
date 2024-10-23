@@ -148,4 +148,4 @@ if st.session_state.story_started:
         # Envoyer le choix du lecteur au scénariste pour générer un nouveau plan et passer à l'écrivain
         generate_plan_and_pass_to_writer(user_query)
     elif st.session_state.interaction_count >= MAX_INTERACTIONS:
-        st.info("Le chat est terminé. Merci pour votre participation.")
+        st.info(" Vous êtes arrivés au bout de l'histoire, la suite arrive dans quelques jours")
