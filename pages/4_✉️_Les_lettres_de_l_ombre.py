@@ -12,6 +12,9 @@ ASSISTANT_ID_ECRIVAIN_RSLC = st.secrets["ASSISTANT_ID_ECRIVAIN"]
 # Initialisation du client OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+# Nombre maximum d'interactions autorisées
+MAX_INTERACTIONS = 10
+
 # Initialisation de l'état de la session pour stocker l'historique des conversations et les threads
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -23,6 +26,9 @@ if "story_started" not in st.session_state:
     st.session_state.story_started = False
 if "checkpoint" not in st.session_state:
     st.session_state.checkpoint = 1  # Suivi du checkpoint actuel
+# Initialisation du compteur d'interactions
+if "interaction_count" not in st.session_state:
+    st.session_state.interaction_count = 0
 
 # Titre de l'application
 st.title("✉️ Les lettres de l'ombre")
@@ -91,6 +97,7 @@ def send_message_and_stream(assistant_id, assistant_role, user_input):
 def start_story():
     st.session_state.story_started = True
     st.session_state.checkpoint = 1  # Réinitialiser au checkpoint 1
+    st.session_state.interaction_count = 0  # Réinitialiser le compteur d'interactions
     # Afficher le message d'attente
     waiting_message = st.empty()
     waiting_message.info("Votre histoire est en train de s'écrire...")
@@ -112,7 +119,7 @@ def generate_plan_and_pass_to_writer(user_input):
     # Envoyer le message pour générer le plan avec le scénariste
     scenariste_plan = send_message_and_stream(ASSISTANT_ID_SCENARISTE_NA_RSLC, "scenariste", scenariste_prompt)
     # Après avoir récupéré le plan, envoyer ce plan à l'écrivain
-    send_message_and_stream(ASSISTANT_ID_ECRIVAIN_RSLC, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en court")
+    send_message_and_stream(ASSISTANT_ID_ECRIVAIN_RSLC, "ecrivain", f"Voici le plan : {scenariste_plan}. Assure toi de la cohérence entre la transition du choix du lecteur et du plan en cours")
     # Incrémenter le checkpoint
     st.session_state.checkpoint += 1
     # Supprimer le message d'attente
@@ -130,11 +137,15 @@ if not st.session_state.story_started:
 
 # Gestion des choix du lecteur et progression des checkpoints
 if st.session_state.story_started:
-    user_query = st.chat_input("Faites votre choix :")
-    if user_query is not None and user_query.strip() != '':
+    user_query = st.chat_input("Faites votre choix :", disabled=st.session_state.interaction_count >= MAX_INTERACTIONS)
+    if user_query is not None and user_query.strip() != '' and st.session_state.interaction_count < MAX_INTERACTIONS:
         with st.chat_message("user"):
             st.markdown(user_query)
+        # Incrémenter le compteur d'interactions
+        st.session_state.interaction_count += 1
         # Stocker la réponse du lecteur dans l'historique de conversation
         st.session_state.chat_history.append({"role": "user", "content": user_query})
         # Envoyer le choix du lecteur au scénariste pour générer un nouveau plan et passer à l'écrivain
         generate_plan_and_pass_to_writer(user_query)
+    elif st.session_state.interaction_count >= MAX_INTERACTIONS:
+        st.info("Le chat est terminé. Merci pour votre participation.")
